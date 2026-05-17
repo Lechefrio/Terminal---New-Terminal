@@ -5,7 +5,7 @@ const fallbackRows = [
   { player: "Rooney", pick: "Pending", points: 0, status: "Waiting" },
   { player: "Tyler", pick: "Pending", points: 0, status: "Waiting" },
   { player: "Abby", pick: "Pending", points: 0, status: "Waiting" },
-  { player: "Abbigail", pick: "Pending", points: 0, status: "Waiting" },
+  { player: "Genevieve", pick: "Pending", points: 0, status: "Waiting" },
   { player: "Josie", pick: "Pending", points: 0, status: "Waiting" },
 ];
 
