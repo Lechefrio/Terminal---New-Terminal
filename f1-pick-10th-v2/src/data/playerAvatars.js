@@ -4,7 +4,7 @@
 
 export const playerAvatars = {
   Reggie: "/player-avatars/reggie.svg?v=final-avatar-v1",
-  Rachel: "/player-avatars/rachel.svg?v=final-avatar-v1",
+  Rachel: "/player-avatars/rachel.svg?v=final-avatar-v2",
   Reece: "/player-avatars/reece.svg?v=final-avatar-v1",
   Rooney: "/player-avatars/rooney.svg?v=final-avatar-v1",
   Tyler: "/player-avatars/tyler.svg?v=final-avatar-v1",
