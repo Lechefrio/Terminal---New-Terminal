@@ -1,3 +1,5 @@
+import DriverAvatar from "./DriverAvatar";
+
 export default function DriverGrid({ drivers = [] }) {
   const data = drivers.length ? drivers : [];
 
@@ -20,7 +22,8 @@ export default function DriverGrid({ drivers = [] }) {
             return (
               <article className={`driver-card ${taken ? "taken" : "available"}`} key={`${driver.name}-${index}`}>
                 <div className="driver-number">#{driver.carNumber || "--"}</div>
-                <div>
+                <DriverAvatar name={driver.name} />
+                <div className="driver-card-copy">
                   <strong>{driver.name}</strong>
                   <span>{driver.team || "Team TBD"}</span>
                 </div>
