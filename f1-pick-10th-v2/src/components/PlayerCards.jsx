@@ -9,24 +9,35 @@ const fallbackPlayers = [
   { name: "Josie", status: "Active" },
 ];
 
-export default function PlayerCards({ players }) {
-  const data = players?.length ? players : fallbackPlayers;
+export default function PlayerCards({ players = [], leaderboard = [] }) {
+  const data = players.length ? players : fallbackPlayers;
+
+  function getPlayerPick(playerName) {
+    const row = leaderboard.find((item) => (item.player || item.name) === playerName);
+    return row?.pick || row?.driver || "Pick pending";
+  }
 
   return (
     <section className="panel" id="players">
-      <div className="panel-header">
-        <p className="eyebrow">Family Grid</p>
-        <h2>Players</h2>
+      <div className="panel-header split-header">
+        <div>
+          <p className="eyebrow">Family Grid</p>
+          <h2>Players</h2>
+        </div>
+        <span className="soft-pill">{data.length} active</span>
       </div>
 
       <div className="player-grid">
-        {data.map((player, index) => (
-          <article className="player-card" key={`${player.name || player.player}-${index}`}>
-            <div className="helmet-dot" />
-            <strong>{player.name || player.player || "Player"}</strong>
-            <span>{player.status || "Active"}</span>
-          </article>
-        ))}
+        {data.map((player, index) => {
+          const name = player.name || player.player || "Player";
+          return (
+            <article className="player-card" key={`${name}-${index}`}>
+              <div className="helmet-dot" />
+              <strong>{name}</strong>
+              <span>{getPlayerPick(name)}</span>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
