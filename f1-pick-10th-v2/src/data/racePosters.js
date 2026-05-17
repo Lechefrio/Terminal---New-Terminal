@@ -3,7 +3,7 @@ const track = (viewBox, path, rotate = 0) => ({ viewBox, path, rotate });
 export const racePosters = [
   {
     id: "canada",
-    match: ["2026-can", "canada", "canadian", "montreal", "montréal"],
+    match: ["2026-can", "can", "canada", "canadian", "montreal", "montréal", "gilles villeneuve"],
     location: "Montréal",
     theme: "red",
     accent: "Grand Prix du Canada",
@@ -11,7 +11,7 @@ export const racePosters = [
   },
   {
     id: "monaco",
-    match: ["monaco", "monte carlo"],
+    match: ["2026-mon", "monaco", "monte carlo"],
     location: "Monte Carlo",
     theme: "red",
     accent: "Grand Prix de Monaco",
@@ -19,7 +19,7 @@ export const racePosters = [
   },
   {
     id: "barcelona",
-    match: ["barcelona", "catalunya", "spain", "spanish", "montmelo", "montmeló"],
+    match: ["2026-esp", "2026-bar", "barcelona", "catalunya", "cataluna", "spain", "spanish", "montmelo", "montmeló"],
     location: "Montmeló",
     theme: "gold",
     accent: "Barcelona-Catalunya",
@@ -27,7 +27,7 @@ export const racePosters = [
   },
   {
     id: "austria",
-    match: ["austria", "austrian", "spielberg"],
+    match: ["2026-aut", "austria", "austrian", "spielberg", "red bull ring"],
     location: "Spielberg",
     theme: "red",
     accent: "Austrian Grand Prix",
@@ -35,7 +35,7 @@ export const racePosters = [
   },
   {
     id: "great-britain",
-    match: ["british", "great britain", "silverstone"],
+    match: ["2026-gbr", "british", "great britain", "silverstone", "uk"],
     location: "Silverstone",
     theme: "blue",
     accent: "British Grand Prix",
@@ -43,7 +43,7 @@ export const racePosters = [
   },
   {
     id: "belgium",
-    match: ["belgium", "belgian", "spa", "francorchamps"],
+    match: ["2026-bel", "belgium", "belgian", "spa", "francorchamps"],
     location: "Spa-Francorchamps",
     theme: "red",
     accent: "Belgian Grand Prix",
@@ -51,7 +51,7 @@ export const racePosters = [
   },
   {
     id: "hungary",
-    match: ["hungary", "hungarian", "mogyorod", "mogyoród"],
+    match: ["2026-hun", "hungary", "hungarian", "mogyorod", "mogyoród", "hungaroring"],
     location: "Mogyoród",
     theme: "green",
     accent: "Hungarian Grand Prix",
@@ -59,7 +59,7 @@ export const racePosters = [
   },
   {
     id: "netherlands",
-    match: ["dutch", "netherlands", "zandvoort"],
+    match: ["2026-ned", "dutch", "netherlands", "zandvoort"],
     location: "Zandvoort",
     theme: "orange",
     accent: "Dutch Grand Prix",
@@ -67,7 +67,7 @@ export const racePosters = [
   },
   {
     id: "italy",
-    match: ["italy", "italian", "monza"],
+    match: ["2026-ita", "italy", "italian", "monza"],
     location: "Monza",
     theme: "green",
     accent: "Gran Premio d'Italia",
@@ -75,7 +75,7 @@ export const racePosters = [
   },
   {
     id: "madrid",
-    match: ["madrid", "spain", "spanish"],
+    match: ["2026-mad", "madrid", "madring", "spain madrid", "spanish madrid"],
     location: "Madrid",
     theme: "gold",
     accent: "Gran Premio de España",
@@ -83,7 +83,7 @@ export const racePosters = [
   },
   {
     id: "azerbaijan",
-    match: ["azerbaijan", "baku"],
+    match: ["2026-aze", "azerbaijan", "baku"],
     location: "Baku",
     theme: "cyan",
     accent: "Azerbaijan Grand Prix",
@@ -91,7 +91,7 @@ export const racePosters = [
   },
   {
     id: "singapore",
-    match: ["singapore", "marina bay"],
+    match: ["2026-sin", "singapore", "marina bay"],
     location: "Marina Bay",
     theme: "red",
     accent: "Singapore Grand Prix",
@@ -99,7 +99,7 @@ export const racePosters = [
   },
   {
     id: "united-states",
-    match: ["united states", "usa", "austin", "cota", "americas"],
+    match: ["2026-usa", "united states", "usa", "austin", "cota", "americas", "circuit of the americas"],
     location: "Austin",
     theme: "blue",
     accent: "United States Grand Prix",
@@ -107,7 +107,7 @@ export const racePosters = [
   },
   {
     id: "mexico-city",
-    match: ["mexico", "mexico city", "ciudad de mexico", "ciudad de méxico"],
+    match: ["2026-mex", "mexico", "mexico city", "ciudad de mexico", "ciudad de méxico"],
     location: "Mexico City",
     theme: "green",
     accent: "Gran Premio de la Ciudad de México",
@@ -115,7 +115,7 @@ export const racePosters = [
   },
   {
     id: "sao-paulo",
-    match: ["sao paulo", "são paulo", "brazil", "brazilian", "interlagos"],
+    match: ["2026-bra", "sao paulo", "são paulo", "brazil", "brazilian", "interlagos"],
     location: "São Paulo",
     theme: "green",
     accent: "Grande Prêmio de São Paulo",
@@ -123,7 +123,7 @@ export const racePosters = [
   },
   {
     id: "las-vegas",
-    match: ["las vegas", "vegas", "the strip"],
+    match: ["2026-lvg", "2026-las", "las vegas", "vegas", "the strip"],
     location: "The Strip",
     theme: "purple",
     accent: "Las Vegas Grand Prix",
@@ -131,7 +131,7 @@ export const racePosters = [
   },
   {
     id: "qatar",
-    match: ["qatar", "lusail", "losail"],
+    match: ["2026-qat", "qatar", "lusail", "losail"],
     location: "Lusail",
     theme: "maroon",
     accent: "Qatar Grand Prix",
@@ -139,7 +139,7 @@ export const racePosters = [
   },
   {
     id: "abu-dhabi",
-    match: ["abu dhabi", "yas", "yas island"],
+    match: ["2026-abu", "2026-uae", "abu dhabi", "yas", "yas island"],
     location: "Yas Island",
     theme: "green",
     accent: "Abu Dhabi Grand Prix",
