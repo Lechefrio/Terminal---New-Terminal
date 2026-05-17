@@ -23,7 +23,7 @@ const fallbackData = {
     { name: "Rooney", status: "Active" },
     { name: "Tyler", status: "Active" },
     { name: "Abby", status: "Active" },
-    { name: "Abbigail", status: "Active" },
+    { name: "Genevieve", status: "Active" },
     { name: "Josie", status: "Active" },
   ],
   leaderboard: [],
