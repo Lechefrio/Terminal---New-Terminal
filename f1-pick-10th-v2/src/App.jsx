@@ -44,7 +44,7 @@ export default function App() {
   return (
     <main className="app-shell">
       <Header status={status} lastUpdated={lastUpdated} onRefresh={() => loadDashboard({ forceRefresh: true })} />
-      <Hero status={status} dashboard={dashboard} />
+      <Hero status={status} dashboard={dashboard} weather={weather} />
 
       <section className="dashboard-grid">
         <Leaderboard rows={leaderboard} />
@@ -57,7 +57,7 @@ export default function App() {
       </section>
 
       <section className="dashboard-grid secondary-grid">
-        <PickForm players={players} drivers={drivers} dashboard={dashboard} onSubmitPick={handleSubmitPick} />
+        <PickForm players={players} drivers={drivers} dashboard={dashboard} leaderboard={leaderboard} onSubmitPick={handleSubmitPick} />
         <DriverGrid drivers={drivers} />
       </section>
     </main>
