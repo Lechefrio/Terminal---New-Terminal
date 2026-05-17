@@ -1,29 +1,29 @@
-import { Trophy, Radio, Timer } from "lucide-react";
+import { CalendarDays, Radio, Timer, Trophy } from "lucide-react";
 
-export default function Hero({ status }) {
+export default function Hero({ status, dashboard = {} }) {
   return (
     <section className="hero-section">
       <div className="hero-copy">
         <p className="eyebrow">Formula 1 Fantasy Game</p>
         <h1>Pick the driver who finishes P10.</h1>
         <p className="hero-text">
-          A cleaner, faster, mobile-first race weekend dashboard for picks,
-          players, leaderboard movement, and live backend data.
+          Live standings, active players, driver availability, race-weekend status,
+          weather, and pick submission in one mobile-first dashboard.
         </p>
         <div className="hero-actions">
-          <a className="primary-button" href="#leaderboard">View Standings</a>
-          <a className="secondary-button" href="#players">View Players</a>
+          <a className="primary-button" href="#picks">Submit Pick</a>
+          <a className="secondary-button" href="#leaderboard">View Standings</a>
         </div>
       </div>
 
       <div className="race-card">
         <div className="status-pill"><Radio size={16} /> {status}</div>
         <Trophy className="race-card-icon" size={44} />
-        <h2>Live System</h2>
-        <p>Frontend shell ready for your existing spreadsheet-powered backend.</p>
+        <h2>{dashboard.nextRace || "Race Weekend"}</h2>
+        <p>{dashboard.raceDate || "Race date pending"}</p>
         <div className="mini-stat-grid">
-          <span><strong>P10</strong> target</span>
-          <span><Timer size={15} /> lock timer ready</span>
+          <span><Timer size={15} /> {dashboard.lockRule || "Locks before lights out"}</span>
+          <span><CalendarDays size={15} /> {dashboard.pickWindow || "Pick window pending"}</span>
         </div>
       </div>
     </section>
