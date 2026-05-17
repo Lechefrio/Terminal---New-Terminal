@@ -93,6 +93,7 @@ function submitPick_(params) {
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const picksSheet = ss.getSheetByName('Picks');
+  const leaderboardSheet = ss.getSheetByName('Leaderboard');
   const raceControlSheet = ss.getSheetByName('Race Control');
   const driverGridSheet = ss.getSheetByName('Driver Grid');
 
@@ -102,19 +103,84 @@ function submitPick_(params) {
     return { ok: false, error: 'Picks are locked for this race.' };
   }
 
-  const validPlayers = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Players').getRange('A2:B').getValues()
+  const validPlayers = ss.getSheetByName('Players').getRange('A2:B').getValues()
     .filter(r => r[0] && String(r[1]).toLowerCase() === 'active')
     .map(r => String(r[0]));
   if (!validPlayers.includes(player)) return { ok: false, error: 'Unknown or inactive player.' };
 
   const drivers = readDrivers_(driverGridSheet);
-  const selectedDriver = drivers.find(d => d.name === driver);
+  const selectedDriver = drivers.find(d => d.name === driver || String(d.name).toLowerCase() === driver.toLowerCase());
   if (!selectedDriver) return { ok: false, error: 'Unknown driver.' };
   if (selectedDriver.status === 'Taken') return { ok: false, error: 'That driver is already taken.' };
 
-  picksSheet.appendRow([raceId, player, driver, selectedDriver.carNumber || '', 'Submitted', new Date()]);
+  const existingPick = currentPickForPlayer_(picksSheet, player);
+  if (existingPick && existingPick !== 'Pending') {
+    return { ok: false, error: player + ' already picked ' + existingPick + '.' };
+  }
 
-  return { ok: true, message: player + ' picked ' + driver + '.' };
+  updatePlayerPick_(picksSheet, player, selectedDriver, raceId);
+  updateLeaderboardPick_(leaderboardSheet, player, selectedDriver, raceId);
+  updateDriverGridPick_(driverGridSheet, selectedDriver.name, player, raceId);
+
+  return { ok: true, message: player + ' picked ' + selectedDriver.name + '.' };
+}
+
+function currentPickForPlayer_(sheet, player) {
+  const rows = sheet.getRange('A1:F30').getDisplayValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).trim() === player) {
+      const pick = String(rows[i][1] || '').trim();
+      return pick || 'Pending';
+    }
+  }
+  return '';
+}
+
+function updatePlayerPick_(sheet, player, driver, raceId) {
+  const rows = sheet.getRange('A1:F30').getDisplayValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).trim() === player) {
+      sheet.getRange(i + 1, 1, 1, 6).setValues([[
+        player,
+        driver.name,
+        driver.carNumber || '',
+        raceId,
+        'No',
+        new Date()
+      ]]);
+      return;
+    }
+  }
+  sheet.appendRow([player, driver.name, driver.carNumber || '', raceId, 'No', new Date()]);
+}
+
+function updateLeaderboardPick_(sheet, player, driver, raceId) {
+  const rows = sheet.getRange('A1:G30').getDisplayValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]).trim() === player) {
+      sheet.getRange(i + 1, 1, 1, 7).setValues([[
+        player,
+        driver.carNumber || '',
+        driver.name,
+        raceId,
+        '',
+        0,
+        'No'
+      ]]);
+      return;
+    }
+  }
+  sheet.appendRow([player, driver.carNumber || '', driver.name, raceId, '', 0, 'No']);
+}
+
+function updateDriverGridPick_(sheet, driverName, player, raceId) {
+  const rows = sheet.getRange('A1:I40').getDisplayValues();
+  for (let i = 2; i < rows.length; i++) {
+    if (String(rows[i][1]).trim() === driverName) {
+      sheet.getRange(i + 1, 6, 1, 3).setValues([[raceId, 'Taken', player]]);
+      return;
+    }
+  }
 }
 
 function readLeaderboard_(sheet) {
@@ -134,12 +200,12 @@ function readLeaderboard_(sheet) {
       rank: i + 1,
       player: r[0],
       carNumber: carNumber,
-      pick: pick,
+      pick: pick || 'Pending',
       raceId: r[3],
       finish: r[4],
       points: Number(r[5]) || 0,
       exactP10: r[6],
-      status: Number(r[5]) > 0 ? 'Scored' : 'Pending'
+      status: pick && pick !== 'Pending' ? 'Submitted' : 'Pending'
     };
   });
   leaderboard.sort((a, b) => (b.points || 0) - (a.points || 0));
@@ -352,9 +418,9 @@ function round_(value) {
 
 function countReadyPicks_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const form = ss.getSheetByName('Mobile Pick Form');
-  if (!form) return 0;
-  return form.getRange('E8:E15').getDisplayValues().flat().filter(v => v === 'Ready').length;
+  const picks = ss.getSheetByName('Picks');
+  if (!picks) return 0;
+  return picks.getRange('B2:B30').getDisplayValues().flat().filter(v => v && v !== 'Pending').length;
 }
 
 function looksLikeCarNumber_(value) {
