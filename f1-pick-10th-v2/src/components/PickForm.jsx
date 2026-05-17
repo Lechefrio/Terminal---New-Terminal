@@ -1,5 +1,6 @@
 import { CheckCircle2, Send, ShieldAlert, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import PlayerAvatar from "./PlayerAvatar";
 
 export default function PickForm({ players = [], drivers = [], dashboard = {}, leaderboard = [], onSubmitPick }) {
   const [player, setPlayer] = useState("");
@@ -97,6 +98,16 @@ export default function PickForm({ players = [], drivers = [], dashboard = {}, l
       {justSubmitted && (
         <div className="success-banner">
           <CheckCircle2 size={20} /> Pick confirmed. Driver board refreshed.
+        </div>
+      )}
+
+      {player && (
+        <div className="pick-selected-player">
+          <PlayerAvatar name={player} size="sm" />
+          <div>
+            <strong>{player}</strong>
+            <span>{selectedPlayerPick ? `Already picked ${selectedPlayerPick}` : "Ready to pick"}</span>
+          </div>
         </div>
       )}
 
