@@ -1,4 +1,5 @@
 import { CalendarDays, CloudSun, Clock3, Radio, Timer, Trophy } from "lucide-react";
+import RaceVisual from "./RaceVisual";
 
 function raceTimeLabel(dashboard) {
   const rawTime = dashboard.raceTime || dashboard.startTime || dashboard.lightsOut || dashboard.sessionTime || "";
@@ -52,17 +53,20 @@ export default function Hero({ status, dashboard = {}, weather = [] }) {
         </div>
       </div>
 
-      <div className="race-card">
+      <div className="race-card race-card-poster">
         <div className="status-pill"><Radio size={16} /> {status}</div>
-        <Trophy className="race-card-icon" size={44} />
-        <p className="eyebrow race-card-eyebrow">Upcoming Race</p>
-        <h2>{dashboard.nextRace || "Race Weekend"}</h2>
-        <p className="race-card-date">{dashboard.raceDate || "Race date pending"}</p>
-        <div className="mini-stat-grid race-detail-grid">
-          <span><Clock3 size={15} /> {raceTimeLabel(dashboard)}</span>
-          <span><CalendarDays size={15} /> {dashboard.pickWindow || "Pick window pending"}</span>
-          <span><Timer size={15} /> {dashboard.lockRule || "Locks before lights out"}</span>
-          <span><CloudSun size={15} /> {weatherLabel(weather, dashboard)}</span>
+        <RaceVisual dashboard={dashboard} />
+        <div className="race-card-content">
+          <Trophy className="race-card-icon" size={34} />
+          <p className="eyebrow race-card-eyebrow">Upcoming Race</p>
+          <h2>{dashboard.nextRace || "Race Weekend"}</h2>
+          <p className="race-card-date">{dashboard.raceDate || "Race date pending"}</p>
+          <div className="mini-stat-grid race-detail-grid">
+            <span><Clock3 size={15} /> {raceTimeLabel(dashboard)}</span>
+            <span><CalendarDays size={15} /> {dashboard.pickWindow || "Pick window pending"}</span>
+            <span><Timer size={15} /> {dashboard.lockRule || "Locks before lights out"}</span>
+            <span><CloudSun size={15} /> {weatherLabel(weather, dashboard)}</span>
+          </div>
         </div>
       </div>
     </section>
