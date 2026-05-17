@@ -104,18 +104,35 @@ function normalizePlayers(players) {
   });
 }
 
+function looksLikeCarNumber(value) {
+  return /^\d{1,3}$/.test(String(value || "").trim());
+}
+
 function normalizeLeaderboard(rows) {
   if (!Array.isArray(rows)) return [];
 
-  return rows.map((row, index) => ({
-    rank: row.rank || index + 1,
-    player: row.player || row.name || "Player",
-    pick: row.pick || row.driver || "Pending",
-    carNumber: row.carNumber || row.number || row.car || "",
-    points: Number(row.points ?? row.score ?? 0),
-    status: row.status || "Pending",
-    ...row,
-  }));
+  return rows.map((row, index) => {
+    let pick = row.pick || row.driver || "Pending";
+    let carNumber = row.carNumber || row.number || row.car || "";
+
+    if (!looksLikeCarNumber(carNumber) && looksLikeCarNumber(pick)) {
+      const originalPick = pick;
+      pick = carNumber || "Pending";
+      carNumber = originalPick;
+    }
+
+    return {
+      rank: row.rank || index + 1,
+      player: row.player || row.name || "Player",
+      pick,
+      carNumber,
+      points: Number(row.points ?? row.score ?? 0),
+      status: row.status || "Pending",
+      ...row,
+      pick,
+      carNumber,
+    };
+  });
 }
 
 function normalizeDrivers(drivers) {
