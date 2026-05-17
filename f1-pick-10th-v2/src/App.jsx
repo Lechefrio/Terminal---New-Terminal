@@ -51,14 +51,17 @@ export default function App() {
         <PlayerCards players={players} leaderboard={leaderboard} />
       </section>
 
-      <section className="dashboard-grid secondary-grid">
-        <RaceStatus dashboard={dashboard} players={players} leaderboard={leaderboard} drivers={drivers} />
+      <section className="dashboard-grid secondary-grid single-panel-grid">
         <WeatherPanel weather={weather} dashboard={dashboard} />
       </section>
 
       <section className="dashboard-grid secondary-grid">
         <PickForm players={players} drivers={drivers} dashboard={dashboard} leaderboard={leaderboard} onSubmitPick={handleSubmitPick} />
         <DriverGrid drivers={drivers} />
+      </section>
+
+      <section className="admin-status-section">
+        <RaceStatus dashboard={dashboard} players={players} leaderboard={leaderboard} drivers={drivers} />
       </section>
     </main>
   );
