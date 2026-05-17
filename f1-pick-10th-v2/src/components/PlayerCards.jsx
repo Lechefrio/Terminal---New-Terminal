@@ -1,4 +1,5 @@
 import DriverAvatar from "./DriverAvatar";
+import PlayerAvatar from "./PlayerAvatar";
 
 const fallbackPlayers = [
   { name: "Reggie", status: "Active" },
@@ -41,7 +42,7 @@ export default function PlayerCards({ players = [], leaderboard = [] }) {
 
           return (
             <article className={`player-card ${pending ? "player-card-pending" : "player-card-picked"}`} key={`${name}-${index}`}>
-              <div className="helmet-dot" />
+              <PlayerAvatar name={name} size="md" />
               <strong>{name}</strong>
               <span className="player-pick-line">
                 {pending ? null : <DriverAvatar name={pick} size="sm" />}
