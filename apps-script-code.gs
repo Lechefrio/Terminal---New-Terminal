@@ -37,7 +37,11 @@ function getPublicData_() {
   const lockState = safeCell_(raceControlSheet, 'B8') || 'OPEN';
 
   const upcoming = findUpcomingRace_(raceCalendarSheet);
-  const weather = readWeather_(weatherSheet);
+  let weather = readWeather_(weatherSheet);
+  if (isPlaceholderWeather_(weather)) {
+    weather = fetchRaceWeekendWeather_(upcoming) || weather;
+  }
+
   const weatherSummary = weather[0]
     ? [weather[0].summary, weather[0].temperature, weather[0].precipitation].filter(Boolean).join(' · ')
     : safeCell_(weatherSheet, 'B2') || 'No forecast loaded yet';
@@ -223,6 +227,127 @@ function readWeather_(sheet) {
       wind: r[windIndex] || '',
       summary: r[summaryIndex] || ''
     }));
+}
+
+function isPlaceholderWeather_(weather) {
+  if (!weather || !weather.length) return true;
+  return weather.every(row => {
+    const text = [row.temperature, row.precipitation, row.wind, row.summary].join(' ').toLowerCase();
+    return text.includes('forecast pending') || text.includes('tbd') || text.includes('not loaded yet');
+  });
+}
+
+function fetchRaceWeekendWeather_(upcoming) {
+  try {
+    const coords = raceCoordinates_(upcoming);
+    if (!coords || !upcoming.date) return null;
+
+    const raceDate = parseIsoDate_(upcoming.date);
+    const startDate = upcoming.weekendStart || addDaysIso_(raceDate, -2);
+    const qualifyingDate = addDaysIso_(parseIsoDate_(startDate), 1);
+    const raceDateIso = toIsoDate_(raceDate);
+
+    const url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=' + encodeURIComponent(coords.lat)
+      + '&longitude=' + encodeURIComponent(coords.lon)
+      + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max'
+      + '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=' + encodeURIComponent(coords.timezone)
+      + '&start_date=' + encodeURIComponent(startDate)
+      + '&end_date=' + encodeURIComponent(raceDateIso);
+
+    const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) return null;
+
+    const payload = JSON.parse(response.getContentText());
+    const daily = payload.daily || {};
+    const rowsByDate = {};
+    (daily.time || []).forEach((date, index) => {
+      rowsByDate[date] = {
+        weatherCode: daily.weather_code ? daily.weather_code[index] : '',
+        high: daily.temperature_2m_max ? daily.temperature_2m_max[index] : '',
+        low: daily.temperature_2m_min ? daily.temperature_2m_min[index] : '',
+        precip: daily.precipitation_probability_max ? daily.precipitation_probability_max[index] : '',
+        wind: daily.wind_speed_10m_max ? daily.wind_speed_10m_max[index] : ''
+      };
+    });
+
+    return [
+      buildWeatherRow_('Practice', startDate, rowsByDate[startDate]),
+      buildWeatherRow_(upcoming.sprint === 'Yes' ? 'Sprint / Qualifying' : 'Qualifying', qualifyingDate, rowsByDate[qualifyingDate]),
+      buildWeatherRow_('Race', raceDateIso, rowsByDate[raceDateIso])
+    ].filter(Boolean);
+  } catch (e) {
+    return null;
+  }
+}
+
+function buildWeatherRow_(day, date, data) {
+  if (!data) return {
+    day: day,
+    date: date,
+    temperature: 'Forecast unavailable',
+    temp: 'Forecast unavailable',
+    precipitation: 'Forecast unavailable',
+    precip: 'Forecast unavailable',
+    wind: 'Forecast unavailable',
+    summary: 'Forecast unavailable'
+  };
+
+  const temp = round_(data.high) + '°F / ' + round_(data.low) + '°F';
+  const precip = data.precip === '' || data.precip === null || data.precip === undefined ? 'Rain TBD' : round_(data.precip) + '% rain';
+  const wind = data.wind === '' || data.wind === null || data.wind === undefined ? 'Wind TBD' : round_(data.wind) + ' mph';
+
+  return {
+    day: day,
+    date: date,
+    temperature: temp,
+    temp: temp,
+    precipitation: precip,
+    precip: precip,
+    wind: wind,
+    summary: weatherCodeSummary_(data.weatherCode)
+  };
+}
+
+function raceCoordinates_(upcoming) {
+  const key = String((upcoming.city || '') + ', ' + (upcoming.country || '')).toLowerCase();
+  if (key.indexOf('montreal') >= 0 && key.indexOf('canada') >= 0) {
+    return { lat: 45.5017, lon: -73.5673, timezone: 'America/Toronto' };
+  }
+  return null;
+}
+
+function weatherCodeSummary_(code) {
+  const numeric = Number(code);
+  if ([0].indexOf(numeric) >= 0) return 'Clear';
+  if ([1, 2].indexOf(numeric) >= 0) return 'Mostly clear';
+  if ([3].indexOf(numeric) >= 0) return 'Overcast';
+  if ([45, 48].indexOf(numeric) >= 0) return 'Fog';
+  if ([51, 53, 55, 56, 57].indexOf(numeric) >= 0) return 'Drizzle risk';
+  if ([61, 63, 65, 66, 67, 80, 81, 82].indexOf(numeric) >= 0) return 'Rain risk';
+  if ([71, 73, 75, 77, 85, 86].indexOf(numeric) >= 0) return 'Snow risk';
+  if ([95, 96, 99].indexOf(numeric) >= 0) return 'Thunderstorm risk';
+  return 'Forecast available';
+}
+
+function parseIsoDate_(value) {
+  const parts = String(value).split('-').map(Number);
+  return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function addDaysIso_(date, days) {
+  const copy = new Date(date.getTime());
+  copy.setDate(copy.getDate() + days);
+  return toIsoDate_(copy);
+}
+
+function toIsoDate_(date) {
+  return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+}
+
+function round_(value) {
+  if (value === '' || value === null || value === undefined) return 'TBD';
+  return Math.round(Number(value));
 }
 
 function countReadyPicks_() {
