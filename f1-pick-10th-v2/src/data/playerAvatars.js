@@ -8,7 +8,7 @@ export const playerAvatars = {
   Reece: "/player-avatars/reece.svg?v=final-avatar-v1",
   Rooney: "/player-avatars/rooney.svg?v=final-avatar-v1",
   Tyler: "/player-avatars/tyler.svg?v=final-avatar-v1",
-  Abby: "/player-avatars/abby.svg?v=final-avatar-v2",
+  Abby: "/player-avatars/abby.svg?v=final-avatar-v3",
   Genevieve: "/player-avatars/genevieve.svg?v=final-avatar-v2",
   Josie: "/player-avatars/josie.svg?v=final-avatar-v2",
 };
