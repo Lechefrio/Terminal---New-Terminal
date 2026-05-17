@@ -1,7 +1,11 @@
 import { getRacePoster } from "../data/racePosters";
 
+const imagePosters = {
+  canada: "/race-posters/canada.svg?v=photo-poster-v1",
+};
+
 const cityDetails = {
-  canada: { label: "Montréal city poster", landmark: "Skyline • River • Olympic Tower", variant: "montreal" },
+  canada: { label: "Montréal photo poster", landmark: "Old Montréal • Bonsecours Market", variant: "montreal" },
   monaco: { label: "Monte Carlo city poster", landmark: "Harbor • Hills • Casino lights", variant: "harbor" },
   barcelona: { label: "Barcelona city poster", landmark: "Catalan skyline • Coast", variant: "coast" },
   austria: { label: "Spielberg landscape poster", landmark: "Alpine hills • Race valley", variant: "alpine" },
@@ -109,15 +113,19 @@ export default function RaceVisual({ dashboard = {} }) {
   const raceName = dashboard.nextRace || dashboard.raceName || poster.accent || "Race Weekend";
   const location = dashboard.city || dashboard.location || poster.location || "Grand Prix Weekend";
   const detail = cityDetails[poster.id] || { label: `${location} city poster`, landmark: poster.accent, variant: "city" };
+  const imagePoster = imagePosters[poster.id];
 
   return (
-    <div className={`race-visual race-visual-city race-visual-${poster.theme} race-visual-${poster.id}`} aria-label={detail.label} role="img">
+    <div className={`race-visual race-visual-city race-visual-${poster.theme} race-visual-${poster.id} ${imagePoster ? "race-visual-photo" : ""}`} aria-label={detail.label} role="img">
+      {imagePoster ? <img className="race-visual-photo-img" src={imagePoster} alt="" aria-hidden="true" /> : null}
       <div className="race-visual-bg" />
-      <div className="city-sun" />
-      <svg className="race-city-svg" viewBox="0 0 520 260" aria-hidden="true">
-        <CityIllustration variant={detail.variant} />
-        <path className="city-river" d="M0 220 C94 204 160 236 248 216 C338 196 420 224 520 202 L520 260 L0 260 Z" />
-      </svg>
+      {imagePoster ? null : <div className="city-sun" />}
+      {imagePoster ? null : (
+        <svg className="race-city-svg" viewBox="0 0 520 260" aria-hidden="true">
+          <CityIllustration variant={detail.variant} />
+          <path className="city-river" d="M0 220 C94 204 160 236 248 216 C338 196 420 224 520 202 L520 260 L0 260 Z" />
+        </svg>
+      )}
       <div className="race-visual-header">
         <span>{location}</span>
         <strong>{dashboard.raceDate || "Race date pending"}</strong>
