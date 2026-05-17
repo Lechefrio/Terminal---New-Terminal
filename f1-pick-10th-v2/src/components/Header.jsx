@@ -17,7 +17,6 @@ export default function Header({ status = "Loading", lastUpdated = "", onRefresh
         <a href="#picks">Picks</a>
         <a href="#drivers">Drivers</a>
         <a href="#weather">Weather</a>
-        <a href="#race">Race</a>
       </nav>
 
       <div className="header-status">
