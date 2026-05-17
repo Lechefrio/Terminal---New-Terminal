@@ -1,0 +1,114 @@
+.race-card-eyebrow {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.race-card-date {
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.race-detail-grid {
+  grid-template-columns: 1fr;
+}
+
+.good-pill {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: rgba(220, 252, 231, 0.95);
+}
+
+.danger-pill {
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.12);
+  color: rgba(254, 226, 226, 0.95);
+}
+
+.pick-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.pick-success-flash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top right, rgba(34, 197, 94, 0.22), transparent 22rem);
+  animation: successPulse 1.4s ease-out;
+}
+
+.success-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: rgba(220, 252, 231, 0.95);
+  font-weight: 850;
+}
+
+.pick-message.success {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.1);
+  color: rgba(220, 252, 231, 0.95);
+}
+
+.pick-message.warning,
+.pick-message.locked {
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.1);
+  color: rgba(254, 226, 226, 0.95);
+}
+
+.weather-row strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.weather-row em {
+  margin-top: 6px;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.driver-card.available {
+  border-color: rgba(34, 197, 94, 0.22);
+}
+
+.driver-card.taken {
+  border-color: rgba(248, 113, 113, 0.22);
+}
+
+@keyframes successPulse {
+  0% { opacity: 0; transform: scale(0.98); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.02); }
+}
+
+@media (max-width: 540px) {
+  .header-nav a {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .leaderboard-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .leaderboard-meta {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .leaderboard-meta small,
+  .points {
+    text-align: left;
+  }
+}
