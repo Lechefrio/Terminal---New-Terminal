@@ -1,5 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 const API_TOKEN = import.meta.env.VITE_PICK10TH_API_TOKEN || "change-this-private-league-token";
+const API_TIMEOUT_MS = 45000;
 
 const fallbackData = {
   dashboard: {
@@ -61,8 +62,8 @@ function jsonp(action, params = {}) {
 
     const timeout = window.setTimeout(() => {
       cleanup();
-      reject(new Error("Apps Script API timed out."));
-    }, 12000);
+      reject(new Error("Apps Script API timed out. The pick may still have been submitted; refresh live data before trying again."));
+    }, API_TIMEOUT_MS);
 
     window[callbackName] = (payload) => {
       window.clearTimeout(timeout);
