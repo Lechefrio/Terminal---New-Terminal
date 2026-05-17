@@ -1,7 +1,34 @@
 import { CalendarDays, CloudSun, Clock3, Radio, Timer, Trophy } from "lucide-react";
 
 function raceTimeLabel(dashboard) {
-  return dashboard.raceTime || dashboard.startTime || dashboard.lightsOut || dashboard.sessionTime || "Time TBD";
+  const rawTime = dashboard.raceTime || dashboard.startTime || dashboard.lightsOut || dashboard.sessionTime || "";
+  if (!rawTime) return "Time TBD";
+
+  const timeText = String(rawTime).trim();
+  const hasPacific = /\b(PST|PDT|PT|Pacific)\b/i.test(timeText);
+  const hasEastern = /\b(ET|EST|EDT|Eastern)\b/i.test(timeText);
+  if (hasEastern && hasPacific) return timeText;
+
+  const timeMatch = timeText.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
+  if (!hasEastern || !timeMatch) return timeText;
+
+  let hour = Number(timeMatch[1]);
+  const minutes = timeMatch[2] || "00";
+  const meridiem = timeMatch[3].toUpperCase();
+
+  if (meridiem === "PM" && hour !== 12) hour += 12;
+  if (meridiem === "AM" && hour === 12) hour = 0;
+
+  const pacificHour24 = (hour + 21) % 24;
+  const pacificMeridiem = pacificHour24 >= 12 ? "PM" : "AM";
+  const pacificHour12 = pacificHour24 % 12 || 12;
+  const pacificTime = `${pacificHour12}:${minutes} ${pacificMeridiem}`;
+
+  const easternDisplay = /\b(ET|EST|EDT|Eastern)\b/i.test(timeText)
+    ? timeText
+    : `${timeText} ET`;
+
+  return `${easternDisplay} / ${pacificTime} PST`;
 }
 
 function weatherLabel(weather, dashboard) {
