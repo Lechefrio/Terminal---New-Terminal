@@ -225,15 +225,39 @@ h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); letter-spacing: -.04em; }
 .podium-card strong { display: block; margin: 6px 0; }
 .player-card {
   display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 12px;
+  grid-template-columns: minmax(86px, auto) 1fr;
+  column-gap: 18px;
   align-items: center;
   padding: 18px;
   border-radius: 20px;
   background: rgba(255,255,255,.08);
   border: 1px solid rgba(255,255,255,.07);
 }
-.player-card span { grid-column: 2; }
+.player-identity {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 86px;
+  text-align: center;
+}
+.player-identity strong {
+  line-height: 1.05;
+}
+.player-card .player-pick-line {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 0;
+  color: rgba(255,255,255,.58);
+  font-size: .95rem;
+}
+.player-card .player-pick-line span {
+  display: inline;
+  margin-top: 0;
+  color: inherit;
+  font-size: inherit;
+}
 .helmet-dot {
   grid-row: span 2;
   width: 34px;
@@ -294,4 +318,14 @@ h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); letter-spacing: -.04em; }
   .hero-section { padding: 28px; }
   .race-card { min-height: 280px; }
   .split-header { flex-direction: column; }
+  .player-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    row-gap: 12px;
+  }
+  .player-card .player-pick-line {
+    grid-column: 1;
+    justify-content: center;
+  }
 }
