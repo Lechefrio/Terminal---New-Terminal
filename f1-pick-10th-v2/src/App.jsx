@@ -4,37 +4,62 @@ import Hero from "./components/Hero";
 import Leaderboard from "./components/Leaderboard";
 import PlayerCards from "./components/PlayerCards";
 import RaceStatus from "./components/RaceStatus";
-import { getLeaderboard, getPlayers } from "./services/api";
+import DriverGrid from "./components/DriverGrid";
+import WeatherPanel from "./components/WeatherPanel";
+import PickForm from "./components/PickForm";
+import { getAllData, submitPick } from "./services/api";
 
 export default function App() {
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [players, setPlayers] = useState([]);
+  const [dashboardData, setDashboardData] = useState({
+    dashboard: {},
+    leaderboard: [],
+    players: [],
+    drivers: [],
+    weather: [],
+    raceCalendar: [],
+  });
   const [status, setStatus] = useState("Loading");
+  const [lastUpdated, setLastUpdated] = useState("");
+
+  async function loadDashboard({ forceRefresh = false } = {}) {
+    setStatus(forceRefresh ? "Refreshing" : "Loading");
+    const data = await getAllData({ forceRefresh });
+    setDashboardData(data);
+    setStatus("Online");
+    setLastUpdated(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+  }
 
   useEffect(() => {
-    async function loadDashboard() {
-      const [leaderboardData, playersData] = await Promise.all([
-        getLeaderboard(),
-        getPlayers(),
-      ]);
-
-      setLeaderboard(Array.isArray(leaderboardData) ? leaderboardData : []);
-      setPlayers(Array.isArray(playersData) ? playersData : []);
-      setStatus("Online");
-    }
-
     loadDashboard();
   }, []);
 
+  async function handleSubmitPick(pick) {
+    const payload = await submitPick(pick);
+    await loadDashboard({ forceRefresh: true });
+    return payload;
+  }
+
+  const { dashboard, leaderboard, players, drivers, weather } = dashboardData;
+
   return (
     <main className="app-shell">
-      <Header />
-      <Hero status={status} />
+      <Header status={status} lastUpdated={lastUpdated} onRefresh={() => loadDashboard({ forceRefresh: true })} />
+      <Hero status={status} dashboard={dashboard} />
+
       <section className="dashboard-grid">
         <Leaderboard rows={leaderboard} />
-        <PlayerCards players={players} />
+        <PlayerCards players={players} leaderboard={leaderboard} />
       </section>
-      <RaceStatus />
+
+      <section className="dashboard-grid secondary-grid">
+        <RaceStatus dashboard={dashboard} players={players} leaderboard={leaderboard} drivers={drivers} />
+        <WeatherPanel weather={weather} dashboard={dashboard} />
+      </section>
+
+      <section className="dashboard-grid secondary-grid">
+        <PickForm players={players} drivers={drivers} dashboard={dashboard} onSubmitPick={handleSubmitPick} />
+        <DriverGrid drivers={drivers} />
+      </section>
     </main>
   );
 }
