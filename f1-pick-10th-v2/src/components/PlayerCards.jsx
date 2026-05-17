@@ -42,11 +42,13 @@ export default function PlayerCards({ players = [], leaderboard = [] }) {
 
           return (
             <article className={`player-card ${pending ? "player-card-pending" : "player-card-picked"}`} key={`${name}-${index}`}>
-              <PlayerAvatar name={name} size="md" />
-              <strong>{name}</strong>
+              <div className="player-identity">
+                <PlayerAvatar name={name} size="md" />
+                <strong>{name}</strong>
+              </div>
               <span className="player-pick-line">
-                {pending ? null : <DriverAvatar name={pick} size="sm" />}
                 <span>{pick}</span>
+                {pending ? null : <DriverAvatar name={pick} size="sm" />}
               </span>
             </article>
           );
