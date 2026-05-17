@@ -116,17 +116,28 @@ function submitPick_(params) {
 function readLeaderboard_(sheet) {
   const raw = sheet.getRange('A1:G30').getDisplayValues();
   const rows = raw.slice(1).filter(r => r[0]);
-  const leaderboard = rows.map((r, i) => ({
-    rank: i + 1,
-    player: r[0],
-    carNumber: r[1],
-    pick: r[2],
-    raceId: r[3],
-    finish: r[4],
-    points: Number(r[5]) || 0,
-    exactP10: r[6],
-    status: Number(r[5]) > 0 ? 'Scored' : 'Pending'
-  }));
+  const leaderboard = rows.map((r, i) => {
+    let carNumber = r[1];
+    let pick = r[2];
+
+    if (!looksLikeCarNumber_(carNumber) && looksLikeCarNumber_(pick)) {
+      const driverName = carNumber;
+      carNumber = pick;
+      pick = driverName;
+    }
+
+    return {
+      rank: i + 1,
+      player: r[0],
+      carNumber: carNumber,
+      pick: pick,
+      raceId: r[3],
+      finish: r[4],
+      points: Number(r[5]) || 0,
+      exactP10: r[6],
+      status: Number(r[5]) > 0 ? 'Scored' : 'Pending'
+    };
+  });
   leaderboard.sort((a, b) => (b.points || 0) - (a.points || 0));
   leaderboard.forEach((row, index) => row.rank = index + 1);
   return leaderboard;
@@ -199,16 +210,19 @@ function readWeather_(sheet) {
   const windIndex = headerIndex_(headers, ['Wind', 'Wind Speed'], 4);
   const summaryIndex = headerIndex_(headers, ['Summary', 'Forecast', 'Condition', 'Weather'], 5);
 
-  return rows.slice(1).filter(r => r.some(Boolean)).map((r, index) => ({
-    day: r[dayIndex] || r[dateIndex] || 'Forecast ' + (index + 1),
-    date: r[dateIndex] || '',
-    temperature: r[tempIndex] || '',
-    temp: r[tempIndex] || '',
-    precipitation: r[precipIndex] || '',
-    precip: r[precipIndex] || '',
-    wind: r[windIndex] || '',
-    summary: r[summaryIndex] || ''
-  }));
+  return rows.slice(1)
+    .filter(r => r.some(Boolean))
+    .filter(r => String(r[summaryIndex] || r[dayIndex] || '').toLowerCase() !== 'no forecast loaded yet')
+    .map((r, index) => ({
+      day: r[dayIndex] || r[dateIndex] || 'Forecast ' + (index + 1),
+      date: r[dateIndex] || '',
+      temperature: r[tempIndex] || '',
+      temp: r[tempIndex] || '',
+      precipitation: r[precipIndex] || '',
+      precip: r[precipIndex] || '',
+      wind: r[windIndex] || '',
+      summary: r[summaryIndex] || ''
+    }));
 }
 
 function countReadyPicks_() {
@@ -216,6 +230,10 @@ function countReadyPicks_() {
   const form = ss.getSheetByName('Mobile Pick Form');
   if (!form) return 0;
   return form.getRange('E8:E15').getDisplayValues().flat().filter(v => v === 'Ready').length;
+}
+
+function looksLikeCarNumber_(value) {
+  return /^\d{1,3}$/.test(String(value || '').trim());
 }
 
 function headerIndex_(headers, names, fallback) {
