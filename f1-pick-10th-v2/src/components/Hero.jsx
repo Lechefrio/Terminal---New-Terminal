@@ -1,6 +1,15 @@
-import { CalendarDays, Radio, Timer, Trophy } from "lucide-react";
+import { CalendarDays, CloudSun, Clock3, Radio, Timer, Trophy } from "lucide-react";
 
-export default function Hero({ status, dashboard = {} }) {
+function raceTimeLabel(dashboard) {
+  return dashboard.raceTime || dashboard.startTime || dashboard.lightsOut || dashboard.sessionTime || "Time TBD";
+}
+
+function weatherLabel(weather, dashboard) {
+  const first = Array.isArray(weather) ? weather[0] : null;
+  return dashboard.weatherSummary || first?.summary || first?.condition || first?.forecast || "Forecast pending";
+}
+
+export default function Hero({ status, dashboard = {}, weather = [] }) {
   return (
     <section className="hero-section">
       <div className="hero-copy">
@@ -19,11 +28,14 @@ export default function Hero({ status, dashboard = {} }) {
       <div className="race-card">
         <div className="status-pill"><Radio size={16} /> {status}</div>
         <Trophy className="race-card-icon" size={44} />
+        <p className="eyebrow race-card-eyebrow">Upcoming Race</p>
         <h2>{dashboard.nextRace || "Race Weekend"}</h2>
-        <p>{dashboard.raceDate || "Race date pending"}</p>
-        <div className="mini-stat-grid">
-          <span><Timer size={15} /> {dashboard.lockRule || "Locks before lights out"}</span>
+        <p className="race-card-date">{dashboard.raceDate || "Race date pending"}</p>
+        <div className="mini-stat-grid race-detail-grid">
+          <span><Clock3 size={15} /> {raceTimeLabel(dashboard)}</span>
           <span><CalendarDays size={15} /> {dashboard.pickWindow || "Pick window pending"}</span>
+          <span><Timer size={15} /> {dashboard.lockRule || "Locks before lights out"}</span>
+          <span><CloudSun size={15} /> {weatherLabel(weather, dashboard)}</span>
         </div>
       </div>
     </section>
