@@ -1,10 +1,16 @@
+const fallbackPlayers = [
+  { name: "Reggie", status: "Active" },
+  { name: "Rachel", status: "Active" },
+  { name: "Reece", status: "Active" },
+  { name: "Rooney", status: "Active" },
+  { name: "Tyler", status: "Active" },
+  { name: "Abby", status: "Active" },
+  { name: "Abbigail", status: "Active" },
+  { name: "Josie", status: "Active" },
+];
+
 export default function PlayerCards({ players }) {
-  const data = players?.length ? players : [
-    { name: "Reggie", status: "Active" },
-    { name: "Rachel", status: "Active" },
-    { name: "Reece", status: "Active" },
-    { name: "Rooney", status: "Active" },
-  ];
+  const data = players?.length ? players : fallbackPlayers;
 
   return (
     <section className="panel" id="players">
@@ -12,6 +18,7 @@ export default function PlayerCards({ players }) {
         <p className="eyebrow">Family Grid</p>
         <h2>Players</h2>
       </div>
+
       <div className="player-grid">
         {data.map((player, index) => (
           <article className="player-card" key={`${player.name || player.player}-${index}`}>
