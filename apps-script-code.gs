@@ -37,7 +37,10 @@ function getPublicData_() {
   const lockState = safeCell_(raceControlSheet, 'B8') || 'OPEN';
 
   const upcoming = findUpcomingRace_(raceCalendarSheet);
-  const weatherSummary = safeCell_(weatherSheet, 'B2') || 'No forecast loaded yet';
+  const weather = readWeather_(weatherSheet);
+  const weatherSummary = weather[0]
+    ? [weather[0].summary, weather[0].temperature, weather[0].precipitation].filter(Boolean).join(' · ')
+    : safeCell_(weatherSheet, 'B2') || 'No forecast loaded yet';
 
   const leaderboard = readLeaderboard_(leaderboardSheet);
   const drivers = readDrivers_(driverGridSheet);
@@ -51,6 +54,9 @@ function getPublicData_() {
       dashboard: {
         nextRace: upcoming.name || currentRaceId || 'TBD',
         raceDate: upcoming.date || 'Race date TBD',
+        raceTime: upcoming.time || 'Time TBD',
+        startTime: upcoming.time || 'Time TBD',
+        venue: upcoming.location || upcoming.venue || '',
         pickWindow: String(lockState).toUpperCase() === 'LOCKED' ? 'LOCKED' : 'OPEN',
         lockRule: '10 min before lights out',
         currentLeader: leader.player || 'TBD',
@@ -63,7 +69,9 @@ function getPublicData_() {
       },
       players: players,
       leaderboard: leaderboard,
-      drivers: drivers
+      drivers: drivers,
+      weather: weather,
+      raceCalendar: upcoming ? [upcoming] : []
     }
   };
 }
@@ -98,8 +106,6 @@ function submitPick_(params) {
   if (!selectedDriver) return { ok: false, error: 'Unknown driver.' };
   if (selectedDriver.status === 'Taken') return { ok: false, error: 'That driver is already taken.' };
 
-  // Expected Picks layout based on current backend: Race ID | Player | Driver Pick | ...
-  // This safely appends only the core submission values and leaves scoring columns for formulas/scripts.
   picksSheet.appendRow([raceId, player, driver, selectedDriver.carNumber || '', 'Submitted', new Date()]);
 
   return { ok: true, message: player + ' picked ' + driver + '.' };
@@ -141,14 +147,47 @@ function readDrivers_(sheet) {
 
 function findUpcomingRace_(sheet) {
   const rows = sheet.getRange('A1:M200').getDisplayValues();
-  const headers = rows[0];
+  const headers = rows[0].map(h => String(h).trim());
   const statusIndex = headers.indexOf('Status');
-  const nameIndex = 1;
-  const dateIndex = 7;
-  const sprintIndex = 9;
-  const match = rows.slice(1).find(r => String(r[statusIndex]).toLowerCase() === 'upcoming');
+  const nameIndex = headerIndex_(headers, ['Race Name', 'Race', 'Grand Prix'], 1);
+  const locationIndex = headerIndex_(headers, ['Location', 'Venue', 'Circuit'], 2);
+  const dateIndex = headerIndex_(headers, ['Race Date', 'Date', 'Grand Prix Date'], 7);
+  const timeIndex = headerIndex_(headers, ['Race Time', 'Start Time', 'Lights Out', 'Lights Out Time', 'Session Time'], 8);
+  const sprintIndex = headerIndex_(headers, ['Sprint', 'Sprint Weekend'], 9);
+  const match = rows.slice(1).find(r => statusIndex >= 0 && String(r[statusIndex]).toLowerCase() === 'upcoming');
   if (!match) return {};
-  return { name: match[nameIndex], date: match[dateIndex], sprint: match[sprintIndex] };
+  return {
+    name: match[nameIndex],
+    location: match[locationIndex],
+    venue: match[locationIndex],
+    date: match[dateIndex],
+    time: timeIndex >= 0 ? match[timeIndex] : '',
+    sprint: sprintIndex >= 0 ? match[sprintIndex] : ''
+  };
+}
+
+function readWeather_(sheet) {
+  if (!sheet) return [];
+  const rows = sheet.getRange('A1:H20').getDisplayValues();
+  if (!rows.length) return [];
+  const headers = rows[0].map(h => String(h).trim());
+  const dayIndex = headerIndex_(headers, ['Day', 'Session', 'Date'], 0);
+  const dateIndex = headerIndex_(headers, ['Date', 'Local Date'], 1);
+  const tempIndex = headerIndex_(headers, ['Temp', 'Temperature', 'High', 'High/Low'], 2);
+  const precipIndex = headerIndex_(headers, ['Precip', 'Precipitation', 'Rain', 'Rain Chance'], 3);
+  const windIndex = headerIndex_(headers, ['Wind', 'Wind Speed'], 4);
+  const summaryIndex = headerIndex_(headers, ['Summary', 'Forecast', 'Condition', 'Weather'], 5);
+
+  return rows.slice(1).filter(r => r.some(Boolean)).map((r, index) => ({
+    day: r[dayIndex] || r[dateIndex] || 'Forecast ' + (index + 1),
+    date: r[dateIndex] || '',
+    temperature: r[tempIndex] || '',
+    temp: r[tempIndex] || '',
+    precipitation: r[precipIndex] || '',
+    precip: r[precipIndex] || '',
+    wind: r[windIndex] || '',
+    summary: r[summaryIndex] || ''
+  }));
 }
 
 function countReadyPicks_() {
@@ -156,6 +195,14 @@ function countReadyPicks_() {
   const form = ss.getSheetByName('Mobile Pick Form');
   if (!form) return 0;
   return form.getRange('E8:E15').getDisplayValues().flat().filter(v => v === 'Ready').length;
+}
+
+function headerIndex_(headers, names, fallback) {
+  for (var i = 0; i < names.length; i++) {
+    var idx = headers.indexOf(names[i]);
+    if (idx >= 0) return idx;
+  }
+  return fallback;
 }
 
 function safeCell_(sheet, a1) {
