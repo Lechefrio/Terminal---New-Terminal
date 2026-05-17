@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
-const API_TOKEN = import.meta.env.VITE_PICK10TH_API_TOKEN || "private-league";
+const API_TOKEN = import.meta.env.VITE_PICK10TH_API_TOKEN || "change-this-private-league-token";
 
 const fallbackData = {
   dashboard: {
