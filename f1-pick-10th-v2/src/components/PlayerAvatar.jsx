@@ -1,5 +1,7 @@
 import { getPlayerAvatar } from "../data/playerAvatars";
 
+const PLAYER_AVATAR_VERSION = "generated-badge-v2";
+
 function initialsFor(name = "") {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "?";
@@ -11,7 +13,12 @@ export default function PlayerAvatar({ name, size = "md", className = "" }) {
   const src = getPlayerAvatar(name);
 
   return (
-    <span className={`player-avatar player-avatar-${size} ${className}`} aria-hidden="true" title={name}>
+    <span
+      className={`player-avatar player-avatar-${size} ${className}`}
+      aria-hidden="true"
+      title={name}
+      data-avatar-version={PLAYER_AVATAR_VERSION}
+    >
       {src ? <img src={src} alt="" loading="lazy" /> : <span>{initialsFor(name)}</span>}
     </span>
   );
