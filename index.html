@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>F1 Pick 10th</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="connection" class="notice hidden"></div>
+
+  <header class="hero">
+    <h1>F1 Pick 10th</h1>
+    <p>Race Weekend Dashboard</p>
+    <nav>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#leaderboard">Leaderboard</a>
+      <a href="#pick">Make Pick</a>
+      <a href="#drivers">Drivers</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dashboard">
+      <h2>Live Center</h2>
+      <button id="refreshButton">Refresh</button>
+      <p>Next Race: <strong id="nextRace">Loading...</strong></p>
+      <p>Race date: <strong id="raceDate">TBD</strong></p>
+      <p>Pick Window: <strong id="pickWindow">Loading...</strong></p>
+      <p><span id="lockRule">Locks before lights out</span></p>
+      <p>Current Leader: <strong id="currentLeader">Loading...</strong> <span id="leaderPoints">0 points</span></p>
+      <p>Players: <strong id="activePlayers">0</strong></p>
+      <p><span id="readyPicks">0 picks ready</span></p>
+      <p>Weather: <strong id="weatherSummary">TBD</strong></p>
+      <p>Sprint Weekend: <strong id="sprintWeekend">TBD</strong></p>
+      <p>System: <strong id="systemStatus">Ready</strong></p>
+    </section>
+
+    <section>
+      <h2>How to Play</h2>
+      <ol>
+        <li>Pick one driver before the race locks.</li>
+        <li>Your driver’s finishing position determines your score.</li>
+        <li>Perfect 10th-place picks get the biggest reward.</li>
+      </ol>
+    </section>
+
+    <section id="leaderboard">
+      <h2>Season Leaderboard</h2>
+      <div id="podium" class="podium"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Pick</th>
+            <th>Car #</th>
+            <th>Points</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <tr><td colspan="6">Loading leaderboard...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pick">
+      <h2>Make Your Pick</h2>
+      <form id="pickForm">
+        <label>Player</label>
+        <select id="playerSelect"></select>
+
+        <label>Driver</label>
+        <select id="driverSelect"></select>
+
+        <p id="pickStatus" class="pick-status">Select a player and driver.</p>
+        <button type="submit">Submit Pick</button>
+      </form>
+    </section>
+
+    <section id="drivers">
+      <h2>Driver Availability</h2>
+      <div id="driverGrid" class="driver-grid">Loading drivers...</div>
+    </section>
+  </main>
+
+  <footer>
+    Pick 10th Built for private league use.
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
