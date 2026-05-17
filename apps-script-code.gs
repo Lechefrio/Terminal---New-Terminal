@@ -57,6 +57,8 @@ function getPublicData_() {
         raceTime: upcoming.time || 'Time TBD',
         startTime: upcoming.time || 'Time TBD',
         venue: upcoming.location || upcoming.venue || '',
+        city: upcoming.city || '',
+        country: upcoming.country || '',
         pickWindow: String(lockState).toUpperCase() === 'LOCKED' ? 'LOCKED' : 'OPEN',
         lockRule: '10 min before lights out',
         currentLeader: leader.player || 'TBD',
@@ -148,21 +150,40 @@ function readDrivers_(sheet) {
 function findUpcomingRace_(sheet) {
   const rows = sheet.getRange('A1:M200').getDisplayValues();
   const headers = rows[0].map(h => String(h).trim());
-  const statusIndex = headers.indexOf('Status');
-  const nameIndex = headerIndex_(headers, ['Race Name', 'Race', 'Grand Prix'], 1);
-  const locationIndex = headerIndex_(headers, ['Location', 'Venue', 'Circuit'], 2);
-  const dateIndex = headerIndex_(headers, ['Race Date', 'Date', 'Grand Prix Date'], 7);
-  const timeIndex = headerIndex_(headers, ['Race Time', 'Start Time', 'Lights Out', 'Lights Out Time', 'Session Time'], 8);
-  const sprintIndex = headerIndex_(headers, ['Sprint', 'Sprint Weekend'], 9);
-  const match = rows.slice(1).find(r => statusIndex >= 0 && String(r[statusIndex]).toLowerCase() === 'upcoming');
+
+  const roundIndex = headerIndex_(headers, ['Round'], 0);
+  const shortRaceIndex = headerIndex_(headers, ['Race'], 1);
+  const officialNameIndex = headerIndex_(headers, ['Official Event Name', 'Event Name', 'Race Name', 'Grand Prix'], 2);
+  const circuitIndex = headerIndex_(headers, ['Circuit'], 3);
+  const cityIndex = headerIndex_(headers, ['City'], 4);
+  const countryIndex = headerIndex_(headers, ['Country'], 5);
+  const weekendStartIndex = headerIndex_(headers, ['Weekend Start'], 6);
+  const raceDateIndex = headerIndex_(headers, ['Race Date'], 7);
+  const statusIndex = headerIndex_(headers, ['Status'], 8);
+  const sprintIndex = headerIndex_(headers, ['Sprint Weekend', 'Sprint'], 9);
+  const timeIndex = headerIndex_(headers, ['Official Race Local/TBD', 'Race Time', 'Start Time', 'Lights Out', 'Lights Out Time', 'Session Time'], 10);
+
+  const dataRows = rows.slice(1).filter(r => r.some(Boolean));
+  const nextRace = dataRows.find(r => String(r[statusIndex]).toLowerCase() === 'next race');
+  const upcomingRace = dataRows.find(r => String(r[statusIndex]).toLowerCase() === 'upcoming');
+  const match = nextRace || upcomingRace;
   if (!match) return {};
+
   return {
-    name: match[nameIndex],
-    location: match[locationIndex],
-    venue: match[locationIndex],
-    date: match[dateIndex],
+    round: match[roundIndex],
+    race: match[shortRaceIndex],
+    name: match[officialNameIndex] || match[roundIndex] || match[shortRaceIndex],
+    officialName: match[officialNameIndex],
+    location: match[circuitIndex],
+    venue: match[circuitIndex],
+    circuit: match[circuitIndex],
+    city: match[cityIndex],
+    country: match[countryIndex],
+    weekendStart: match[weekendStartIndex],
+    date: match[raceDateIndex],
     time: timeIndex >= 0 ? match[timeIndex] : '',
-    sprint: sprintIndex >= 0 ? match[sprintIndex] : ''
+    status: match[statusIndex],
+    sprint: match[sprintIndex]
   };
 }
 
