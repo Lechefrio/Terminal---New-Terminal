@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { getDriverPhoto } from "../data/driverPhotos";
+
 function initialsFor(name = "") {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "?";
@@ -10,16 +13,23 @@ function colorIndexFor(name = "") {
 }
 
 export default function DriverAvatar({ name, size = "md", className = "" }) {
+  const [imageFailed, setImageFailed] = useState(false);
   const initials = initialsFor(name);
   const colorIndex = colorIndexFor(name);
+  const photo = getDriverPhoto(name);
+  const showPhoto = photo && !imageFailed;
 
   return (
     <div
-      className={`driver-avatar driver-avatar-${size} driver-avatar-color-${colorIndex} ${className}`}
+      className={`driver-avatar driver-avatar-${size} driver-avatar-color-${colorIndex} ${showPhoto ? "has-photo" : "has-initials"} ${className}`}
       aria-hidden="true"
       title={name}
     >
-      <span>{initials}</span>
+      {showPhoto ? (
+        <img src={photo} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setImageFailed(true)} />
+      ) : (
+        <span>{initials}</span>
+      )}
     </div>
   );
 }
