@@ -1,11 +1,7 @@
 import { getRacePoster } from "../data/racePosters";
 
-const imagePosters = {
-  canada: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/March%C3%A9_Bonsecours_in_Old_Montreal.jpg/1200px-March%C3%A9_Bonsecours_in_Old_Montreal.jpg",
-};
-
 const cityDetails = {
-  canada: { label: "Montréal photo poster", landmark: "Old Montréal • Bonsecours Market", variant: "montreal" },
+  canada: { label: "Montréal city poster", landmark: "Old Montréal • Bonsecours Market", variant: "montreal" },
   monaco: { label: "Monte Carlo city poster", landmark: "Harbor • Hills • Casino lights", variant: "harbor" },
   barcelona: { label: "Barcelona city poster", landmark: "Catalan skyline • Coast", variant: "coast" },
   austria: { label: "Spielberg landscape poster", landmark: "Alpine hills • Race valley", variant: "alpine" },
@@ -43,19 +39,20 @@ function SkylineBlocks() {
 function MontrealPosterArt() {
   return (
     <>
-      <path className="city-mountain" d="M0 126 C82 78 144 92 218 66 C296 40 362 82 520 44 L520 226 L0 226 Z" />
-      <path className="city-bridge" d="M28 178 C104 116 182 114 260 170 C326 214 398 210 486 154" />
-      <path className="city-bridge city-bridge-secondary" d="M36 196 C118 146 190 148 260 190 C334 232 410 226 498 184" />
-      <g className="city-landmarks">
-        <rect x="74" y="138" width="24" height="82" rx="3" />
-        <path d="M86 110 L102 138 L70 138 Z" />
-        <rect x="112" y="128" width="24" height="92" rx="3" />
-        <path d="M124 98 L142 128 L106 128 Z" />
-        <path d="M310 210 L350 88 L367 94 L338 210 Z" />
-        <path d="M348 90 C388 104 414 132 426 166 C394 154 368 132 348 90 Z" />
-        <rect x="228" y="154" width="70" height="66" rx="8" />
-        <rect x="388" y="146" width="58" height="74" rx="8" />
+      <path className="city-sky" d="M0 72 C68 46 132 60 194 40 C290 8 362 54 520 18 L520 226 L0 226 Z" />
+      <g className="city-landmarks montreal-landmarks">
+        <path d="M54 220 L54 126 L86 126 L86 220 Z" />
+        <path d="M70 88 L94 126 L46 126 Z" />
+        <path d="M110 220 L110 112 L148 112 L148 220 Z" />
+        <path d="M129 70 L156 112 L102 112 Z" />
+        <rect x="180" y="148" width="88" height="72" rx="10" />
+        <path d="M190 148 C204 116 244 116 258 148 Z" />
+        <rect x="292" y="134" width="62" height="86" rx="8" />
+        <path d="M356 220 L394 76 L416 84 L386 220 Z" />
+        <path d="M396 78 C438 92 470 126 486 164 C446 154 418 126 396 78 Z" />
       </g>
+      <path className="city-bridge" d="M20 184 C96 118 176 118 258 172 C326 218 402 214 500 154" />
+      <path className="city-bridge city-bridge-secondary" d="M28 204 C110 150 184 150 258 190 C336 234 416 230 506 184" />
     </>
   );
 }
@@ -113,19 +110,15 @@ export default function RaceVisual({ dashboard = {} }) {
   const raceName = dashboard.nextRace || dashboard.raceName || poster.accent || "Race Weekend";
   const location = dashboard.city || dashboard.location || poster.location || "Grand Prix Weekend";
   const detail = cityDetails[poster.id] || { label: `${location} city poster`, landmark: poster.accent, variant: "city" };
-  const imagePoster = imagePosters[poster.id];
 
   return (
-    <div className={`race-visual race-visual-city race-visual-${poster.theme} race-visual-${poster.id} ${imagePoster ? "race-visual-photo" : ""}`} aria-label={detail.label} role="img">
-      {imagePoster ? <img className="race-visual-photo-img" src={imagePoster} alt="" aria-hidden="true" /> : null}
+    <div className={`race-visual race-visual-city race-visual-${poster.theme} race-visual-${poster.id}`} aria-label={detail.label} role="img">
       <div className="race-visual-bg" />
-      {imagePoster ? null : <div className="city-sun" />}
-      {imagePoster ? null : (
-        <svg className="race-city-svg" viewBox="0 0 520 260" aria-hidden="true">
-          <CityIllustration variant={detail.variant} />
-          <path className="city-river" d="M0 220 C94 204 160 236 248 216 C338 196 420 224 520 202 L520 260 L0 260 Z" />
-        </svg>
-      )}
+      <div className="city-sun" />
+      <svg className="race-city-svg" viewBox="0 0 520 260" aria-hidden="true">
+        <CityIllustration variant={detail.variant} />
+        <path className="city-river" d="M0 220 C94 204 160 236 248 216 C338 196 420 224 520 202 L520 260 L0 260 Z" />
+      </svg>
       <div className="race-visual-header">
         <span>{location}</span>
         <strong>{dashboard.raceDate || "Race date pending"}</strong>
