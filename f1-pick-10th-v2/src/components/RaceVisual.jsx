@@ -1,7 +1,7 @@
 import { getRacePoster } from "../data/racePosters";
 
 const imagePosters = {
-  canada: "https://commons.wikimedia.org/wiki/Special:FilePath/Bonsecours_Market%2C_as_seen_from_the_Old_Port_of_Montreal.jpg?width=1200",
+  canada: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/March%C3%A9_Bonsecours_in_Old_Montreal.jpg/1200px-March%C3%A9_Bonsecours_in_Old_Montreal.jpg",
 };
 
 const cityDetails = {
