@@ -5,6 +5,7 @@ import "./styles/app.css";
 import "./styles/v2-polish.css";
 import "./styles/race-visual.css";
 import "./styles/player-avatars.css";
+import "./styles/grid-intel.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
