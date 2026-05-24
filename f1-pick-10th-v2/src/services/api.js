@@ -30,6 +30,7 @@ const fallbackData = {
   drivers: [],
   weather: [],
   raceCalendar: [],
+  raceIntel: {},
 };
 
 let cachedDataPromise = null;
@@ -154,6 +155,26 @@ function normalizeWeather(weather) {
   return [];
 }
 
+function normalizeRaceIntel(raceIntel) {
+  if (!raceIntel || typeof raceIntel !== "object") return {};
+
+  const normalizeRows = (rows) => Array.isArray(rows) ? rows.map((row, index) => ({
+    grid: row.grid || row.gridPosition || row.startPosition || row.position || index + 1,
+    driver: row.driver || row.name || row.driverName || row.fullName || row.broadcastName || "",
+    team: row.team || row.teamName || row.constructor || "",
+    carNumber: row.carNumber || row.driverNumber || row.number || "",
+    q3: row.q3 || row.q3Time || row.qualifyingTime || row.time || "",
+    notes: row.notes || row.status || row.penalty || "",
+    ...row,
+  })) : [];
+
+  return {
+    ...raceIntel,
+    startingGrid: normalizeRows(raceIntel.startingGrid || raceIntel.grid || []),
+    qualifying: normalizeRows(raceIntel.qualifying || []),
+  };
+}
+
 function normalizeData(rawData = {}) {
   return {
     dashboard: { ...fallbackData.dashboard, ...(rawData.dashboard || {}) },
@@ -162,6 +183,7 @@ function normalizeData(rawData = {}) {
     drivers: normalizeDrivers(rawData.drivers),
     weather: normalizeWeather(rawData.weather),
     raceCalendar: rawData.raceCalendar || rawData.calendar || [],
+    raceIntel: normalizeRaceIntel(rawData.raceIntel || rawData.gridIntel || {}),
   };
 }
 
