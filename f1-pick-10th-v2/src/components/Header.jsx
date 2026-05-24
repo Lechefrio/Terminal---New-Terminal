@@ -14,6 +14,7 @@ export default function Header({ status = "Loading", lastUpdated = "", onRefresh
       <nav className="header-nav" aria-label="Primary navigation">
         <a href="#leaderboard">Leaderboard</a>
         <a href="#players">Players</a>
+        <a href="#grid-intel">Grid Intel</a>
         <a href="#picks">Picks</a>
         <a href="#drivers">Drivers</a>
         <a href="#weather">Weather</a>
