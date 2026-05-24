@@ -7,6 +7,7 @@ import RaceStatus from "./components/RaceStatus";
 import DriverGrid from "./components/DriverGrid";
 import WeatherPanel from "./components/WeatherPanel";
 import PickForm from "./components/PickForm";
+import QualifyingGrid from "./components/QualifyingGrid";
 import { getAllData, submitPick } from "./services/api";
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
     drivers: [],
     weather: [],
     raceCalendar: [],
+    raceIntel: {},
   });
   const [status, setStatus] = useState("Loading");
   const [lastUpdated, setLastUpdated] = useState("");
@@ -39,7 +41,7 @@ export default function App() {
     return payload;
   }
 
-  const { dashboard, leaderboard, players, drivers, weather } = dashboardData;
+  const { dashboard, leaderboard, players, drivers, weather, raceIntel } = dashboardData;
 
   return (
     <main className="app-shell">
@@ -49,6 +51,10 @@ export default function App() {
       <section className="dashboard-grid">
         <Leaderboard rows={leaderboard} />
         <PlayerCards players={players} leaderboard={leaderboard} />
+      </section>
+
+      <section className="dashboard-grid secondary-grid single-panel-grid">
+        <QualifyingGrid raceIntel={raceIntel} drivers={drivers} dashboard={dashboard} />
       </section>
 
       <section className="dashboard-grid secondary-grid single-panel-grid">
