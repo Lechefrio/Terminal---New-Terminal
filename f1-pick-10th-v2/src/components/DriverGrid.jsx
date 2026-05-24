@@ -1,5 +1,10 @@
 import DriverAvatar from "./DriverAvatar";
 
+function lastNameFor(name = "") {
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  return parts.length ? parts[parts.length - 1] : "Driver";
+}
+
 export default function DriverGrid({ drivers = [] }) {
   const data = drivers.length ? drivers : [];
 
@@ -21,13 +26,15 @@ export default function DriverGrid({ drivers = [] }) {
             const taken = String(driver.status || "").toLowerCase() === "taken" || Boolean(driver.pickedBy);
             return (
               <article className={`driver-card ${taken ? "taken" : "available"}`} key={`${driver.name}-${index}`}>
-                <div className="driver-number">#{driver.carNumber || "--"}</div>
-                <DriverAvatar name={driver.name} />
+                <div className="driver-card-topline">
+                  <div className="driver-number">#{driver.carNumber || "--"}</div>
+                  <em>{taken ? `Taken${driver.pickedBy ? ` by ${driver.pickedBy}` : ""}` : "Available"}</em>
+                </div>
+                <DriverAvatar name={driver.name} size="lg" className="driver-board-avatar" />
                 <div className="driver-card-copy">
-                  <strong>{driver.name}</strong>
+                  <strong>{lastNameFor(driver.name)}</strong>
                   <span>{driver.team || "Team TBD"}</span>
                 </div>
-                <em>{taken ? `Taken${driver.pickedBy ? ` by ${driver.pickedBy}` : ""}` : "Available"}</em>
               </article>
             );
           })}
