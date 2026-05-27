@@ -1,5 +1,6 @@
 import { CalendarDays, CloudSun, Clock3, Radio, Timer, Trophy } from "lucide-react";
 import RaceVisual from "./RaceVisual";
+import { getRacePoster } from "../data/racePosters";
 
 function raceTimeLabel(dashboard) {
   const rawTime = dashboard.raceTime || dashboard.startTime || dashboard.lightsOut || dashboard.sessionTime || "";
@@ -38,8 +39,10 @@ function weatherLabel(weather, dashboard) {
 }
 
 export default function Hero({ status, dashboard = {}, weather = [] }) {
+  const poster = getRacePoster(dashboard);
+
   return (
-    <section className="hero-section">
+    <section className={`hero-section hero-race-${poster.id}`}>
       <div className="hero-copy">
         <p className="eyebrow">Formula 1 Fantasy Game</p>
         <h1>Pick the driver who finishes P10.</h1>
