@@ -6,6 +6,7 @@ import "./styles/v2-polish.css";
 import "./styles/race-visual.css";
 import "./styles/player-avatars.css";
 import "./styles/grid-intel.css";
+import "./styles/monaco-visual-test.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
