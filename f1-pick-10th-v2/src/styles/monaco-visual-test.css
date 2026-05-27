@@ -1,0 +1,75 @@
+.hero-race-monaco {
+  background:
+    linear-gradient(90deg, rgba(8, 9, 13, 0.94) 0%, rgba(8, 9, 13, 0.72) 38%, rgba(8, 9, 13, 0.22) 100%),
+    linear-gradient(180deg, rgba(8, 9, 13, 0.02) 0%, rgba(8, 9, 13, 0.18) 54%, rgba(8, 9, 13, 0.86) 100%),
+    url('/race-assets/monaco-hero.svg') center center / cover no-repeat,
+    rgba(15,16,22,.94);
+}
+
+.hero-race-monaco::after {
+  color: rgba(255,255,255,.03);
+}
+
+.hero-race-monaco .hero-copy {
+  text-shadow: 0 12px 34px rgba(0,0,0,.72);
+}
+
+.race-visual-monaco {
+  min-height: 250px;
+  background:
+    radial-gradient(circle at 54% 46%, rgba(255,255,255,.24), transparent 9rem),
+    radial-gradient(circle at 82% 18%, rgba(225,6,0,.35), transparent 8rem),
+    linear-gradient(145deg, #0b0c12, #151823 48%, #050609 100%);
+}
+
+.race-visual-monaco::after {
+  height: 36%;
+}
+
+.race-visual-monaco .race-visual-bg {
+  opacity: .26;
+  background:
+    radial-gradient(circle at 50% 68%, rgba(225,6,0,.22), transparent 9rem),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0 8px, transparent 8px 22px);
+}
+
+.race-visual-monaco .race-visual-header,
+.race-visual-monaco .race-visual-footer {
+  display: none;
+}
+
+.race-visual-monaco .race-track-svg {
+  width: 88%;
+  max-width: 370px;
+  position: relative;
+  z-index: 4;
+  overflow: visible;
+  filter:
+    drop-shadow(0 0 10px rgba(255,255,255,.45))
+    drop-shadow(0 18px 28px rgba(0,0,0,.55));
+}
+
+.race-visual-monaco .track-shadow {
+  fill: none;
+  stroke: rgba(0,0,0,.58);
+  stroke-width: 28;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.race-visual-monaco .track-line {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 820px) {
+  .hero-race-monaco {
+    background:
+      linear-gradient(180deg, rgba(8, 9, 13, 0.70) 0%, rgba(8, 9, 13, 0.88) 100%),
+      url('/race-assets/monaco-hero.svg') center center / cover no-repeat,
+      rgba(15,16,22,.94);
+  }
+}
